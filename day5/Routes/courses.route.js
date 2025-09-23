@@ -10,7 +10,7 @@ const coursesController = require('../controllers/courses.controllers')
 //Route --> Resources
 // get all courses
 router.route('/')
-    .get(coursesController.getAllCourse);
+    .get(coursesController.getAllCourse)
     .post([
         body('title')
             .notEmpty()

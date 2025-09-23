@@ -1,5 +1,5 @@
 
-let {courses} = require('./data/courses')
+let {courses} = require('../data/courses');
 const {body, validationResult} = require('express-validator');
 
 const getAllCourse = (req, res) => {
