@@ -1,8 +1,10 @@
 
-let {courses} = require('../data/courses');
 const {body, validationResult} = require('express-validator');
+const courses = require('../models/course.model');
 
-const getAllCourse = (req, res) => {
+const getAllCourse = async (req, res) => {
+
+    const courses = await Course.find()
     res.json(courses);
 }
 
@@ -13,31 +15,18 @@ const getCourseById = (req, res) => {
     res.json(course);
 }
 
-const addCourse = ([
-        body('title')
-            .notEmpty()
-            .withMessage('Title is required')
-            .isLength({ min: 2 })
-            .withMessage('Title must be at least 2 characters long'),
-        body('price')
-            .notEmpty()
-            .withMessage('Price is required')
-            .isNumeric()
-            .withMessage('Price must be a number'),
-    ],
-    (req, res) => {
+const addCourse = async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const newCourse = {
-            id: courses.length + 1,
+        const newCourse = new Course({
             title: req.body.title,
-            price: req.body.price
-    };
-    courses.push(newCourse);
-    res.status(201).json(newCourse);
-})
+            price: req.body.price,
+        });
+        await newCourse.save();
+        res.status(201).json(newCourse);
+}
 
 const updateCourse = ([
         body('title')
