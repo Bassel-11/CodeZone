@@ -12,6 +12,4 @@ const courseSchema = new mongoose.Schema({
     descripution: String
 });
 
-mongoose.model('Course', courseSchema);
-
-module.exports = mongoose.model('Course');
+module.exports = mongoose.model('Course', courseSchema);
