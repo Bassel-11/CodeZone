@@ -7,28 +7,20 @@ const router = express.Router();
 
 
 const coursesController = require('../controllers/courses.contoller.js');
+const { validationSchema } = require('../middleware/validationSchema.js');
 
 
-router.get('/', coursesController.getAllCourses);
 
-router.get('/:id', coursesController.getCourseById);
+router.route('/')
+    .get(coursesController.getAllCourses)
+    .post(validationSchema(), coursesController.addCourse)
 
-router.post('/api/courses', 
-    [
-        body('name')
-            .notEmpty()
-            .withMessage('Name is required')
-            .isLength({min: 2})
-            .withMessage('Name must be at least 2 characters long'),
-        body('price')
-            .notEmpty()
-            .withMessage('Price is required'),
-    ],
-    coursesController.addCourse
-)
 
-router.patch('/:id', coursesController.updateCourse);
 
-router.delete('/:id', coursesController.deleteCourse);
+router.route('/:id')
+    .get(coursesController.getCourseById)
+    .patch(coursesController.updateCourse)
+    .delete(coursesController.deleteCourse);
+
 
 module.exports = router;
