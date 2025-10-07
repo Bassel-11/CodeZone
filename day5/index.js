@@ -5,18 +5,7 @@ const app = express();
 
 app.use(express.json())
 
-let courses = [
-    {
-        id: 1,
-        name: "react",
-        price: 299
-    },
-    {
-        id: 2,
-        name: "js",
-        price: 800
-    }
-]
+let {courses} = require('./data/courses')
 
 
 app.get('/api/courses', (req, res) => {
