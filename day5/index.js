@@ -4,20 +4,12 @@ const {body, validationResult} = require('express-validator')
 const app = express();
 
 app.use(express.json())
+const coursesController = require('./controllers/courses.contoller.js');
 
-let {courses} = require('./data/courses')
 
+app.get('/api/courses', coursesController.getAllCourses); 
 
-app.get('/api/courses', (req, res) => {
-    res.json(courses);
-}); 
-
-app.get('/api/courses/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const course = courses.find(c => c.id === id);
-    if (!course) return res.status(404).send('The course with the given ID was not found.');
-    res.json(course)
-})
+app.get('/api/courses/:id', coursesController.getCourseById);
 
 app.post('/api/courses', 
     [
@@ -30,31 +22,12 @@ app.post('/api/courses',
             .notEmpty()
             .withMessage('Price is required'),
     ],
-    (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    const newCourse = {id: courses.length+1, ...req.body}
-    courses.push(newCourse)
-    res.status(201).json(newCourse)
-})
-
-app.patch('/api/courses/:id', (req, res) => {
-        
-        const id = parseInt(req.params.id);
-        let course = courses.find(c => c.id === id);
-        if (!course) return res.status(404).json({msg: 'The course with the given ID was not found.'});
-        course = {...course, ...req.body};
-        res.json(course);
-    }
+    coursesController.addCourse
 )
 
-app.delete('/api/courses/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    courses = courses.filter((c) => c.id !== id);
-    res.status(204).json({success: true});
-})
+app.patch('/api/courses/:id', coursesController.updateCourse);
+
+app.delete('/api/courses/:id', coursesController.deleteCourse);
 
 app.listen(3000, () => {
     console.log('listening on port 3000')
